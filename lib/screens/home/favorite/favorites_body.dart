@@ -17,22 +17,9 @@ class _FavoriteBodyState extends State<FavoriteBody> {
   @override
   Widget build(BuildContext context) {
     final gamesProvider = Provider.of<GamesProvider>(context);
+    final favoritePlaceHolder = gamesProvider.favoritePlaceHolder;
 
-    // Get unique favorite games by name
-    final uniqueFavoriteGames =
-        gamesProvider.games.where((game) => game.isFavorite).toList();
-
-    // Group games by name and take the first one from each group
-    final uniqueGamesByName = <Game>[];
-    final seenNames = <String>{};
-    for (final game in uniqueFavoriteGames) {
-      if (!seenNames.contains(game.name)) {
-        seenNames.add(game.name);
-        uniqueGamesByName.add(game);
-      }
-    }
-
-    return uniqueGamesByName.isEmpty
+    return favoritePlaceHolder.isEmpty
         ? Center(
             child: Text(
               'No favorite games yet',
@@ -41,9 +28,9 @@ class _FavoriteBodyState extends State<FavoriteBody> {
           )
         : ListView.builder(
             padding: const EdgeInsets.all(10),
-            itemCount: uniqueGamesByName.length,
+            itemCount: favoritePlaceHolder.length,
             itemBuilder: (context, index) {
-              final game = uniqueGamesByName[index];
+              final game = favoritePlaceHolder[index];
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 10),
                 shape: RoundedRectangleBorder(

@@ -1,6 +1,7 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class GamesProvider with ChangeNotifier {
   List<Game> _games = [];
@@ -9,39 +10,26 @@ class GamesProvider with ChangeNotifier {
   List<Game> get games => _games;
   List<Guide> get guides => _guides;
 
-  // Shared preferences instance
-  late SharedPreferences _prefs;
-
-  // Initialize shared preferences in the constructor
-  GamesProvider() {
-    _initSharedPreferences();
-  }
-
-  // Initialize shared preferences
-  Future<void> _initSharedPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
+  List<Game> _favoritePlaceHolder = [];
+  List<Game> get favoritePlaceHolder => _favoritePlaceHolder;
 
   Future<void> fetchGames() async {
     final response = await ParseObject('Game').getAll();
     if (response.success && response.results != null) {
-      _games = response.results!.map((e) => Game.fromParse(e)).toList();
-      // Load favorite status from shared preferences
-      _loadFavoriteStatus();
+      _games = response.results!.map((e) {
+        return Game.fromParse(e);
+      }).toList();
+
+      // Update isFavorite based on favoritePlaceHolder
+      for (final game in _games) {
+        if (_favoritePlaceHolder
+            .any((favorite) => favorite.name == game.name)) {
+          game.isFavorite = true;
+        }
+      }
+
       notifyListeners();
     }
-  }
-
-  // Load favorite status from shared preferences
-  void _loadFavoriteStatus() {
-    for (final game in _games) {
-      game.isFavorite = _prefs.getBool(game.name) ?? false;
-    }
-  }
-
-  // Save favorite status to shared preferences
-  void _saveFavoriteStatus(String gameName, bool isFavorite) {
-    _prefs.setBool(gameName, isFavorite);
   }
 
   Future<void> fetchGuides() async {
@@ -111,8 +99,26 @@ class GamesProvider with ChangeNotifier {
 
     for (final game in matchingGames) {
       game.isFavorite = !game.isFavorite;
-      // Update shared preferences
-      _saveFavoriteStatus(gameName, game.isFavorite);
+    }
+    if (matchingGames.first.isFavorite == true) {
+      final alreadyInFavorites = _favoritePlaceHolder
+          .any((element) => element.name == matchingGames.first.name);
+
+      if (!alreadyInFavorites) {
+        _favoritePlaceHolder.add(
+          Game(
+              name: matchingGames.first.name,
+              id: matchingGames.first.name,
+              title: 'added to favorites',
+              date: DateTime.now().toIso8601String(),
+              gameIcon: matchingGames.first.gameIcon,
+              isFavorite: true),
+        );
+      }
+    } else {
+      _favoritePlaceHolder.removeWhere(
+        (element) => element.name == matchingGames.first.name,
+      );
     }
 
     notifyListeners();
