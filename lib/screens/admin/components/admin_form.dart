@@ -210,6 +210,9 @@ class _AdminFormState extends State<AdminForm> {
                         labelStyle: kTextStyle(color: kFormForegroundColor),
                       ),
                       style: kTextStyle(color: kFormForegroundColor),
+                      onSaved: (value) {
+                        _nameController.text = _convertToCamelCase(value!);
+                      },
                     );
                   },
                   optionsViewBuilder: (BuildContext context,
@@ -307,11 +310,24 @@ class _AdminFormState extends State<AdminForm> {
                     });
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kFillColor,
+                        foregroundColor: kPrimaryColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                        textStyle: kTextStyle(
+                          fontSize: 16,
+                          color: kSubtitleColor,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
@@ -344,6 +360,16 @@ class _AdminFormState extends State<AdminForm> {
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kFillColor,
+                        foregroundColor: kHeartColor,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                        textStyle: kTextStyle(fontSize: 16, color: kHeartColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
                       onPressed: () {
                         _formKey.currentState!.reset();
                         setState(() {

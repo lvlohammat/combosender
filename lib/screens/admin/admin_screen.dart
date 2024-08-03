@@ -2,10 +2,8 @@ import 'package:combosender/constants.dart';
 import 'package:combosender/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-
-import '../../providers/games_provider.dart';
 import 'components/admin_form.dart';
+import 'components/manage_games.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -100,54 +98,6 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class ManageGames extends StatelessWidget {
-  const ManageGames({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<GamesProvider>(
-      builder: (context, gamesProvider, child) {
-        return ListView.builder(
-          itemCount: gamesProvider.games.length,
-          itemBuilder: (context, index) {
-            final game = gamesProvider.games[index];
-            return Card(
-              margin: const EdgeInsets.all(5),
-              color: const Color(0xFF3B4252), // Card color from admin_form.dart
-              child: ListTile(
-                title: Text(game.title,
-                    style: const TextStyle(color: kForegroundColor)),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: kSubtitleColor),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AdminForm(game: game),
-                          ),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: kHeartColor),
-                      onPressed: () {
-                        gamesProvider.deleteGame(game.id);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }

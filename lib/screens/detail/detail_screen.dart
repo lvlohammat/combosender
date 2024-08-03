@@ -18,6 +18,8 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int? copiedIndex;
+  bool _isSearching = false;
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +31,77 @@ class _DetailScreenState extends State<DetailScreen> {
         .where((game) => game.name == initialGame.name)
         .toList();
 
+    // Filter games based on search query
+    final filteredGames = _isSearching
+        ? gamesWithSameName
+            .where((game) =>
+                game.title.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .toList()
+        : gamesWithSameName;
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         foregroundColor: kTitleColor.withAlpha(160),
-        title: Text(initialGame.name,
-            style: TextStyle(
-                fontFamily: GoogleFonts.poppins().fontFamily ?? 'Vazirmatn')),
+        title: _isSearching
+            ? Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search by title',
+                    hintStyle: kTextStyle(color: kSubtitleColor, fontSize: 16),
+                    prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass,
+                        color: kSubtitleColor),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  style: kTextStyle(
+                      color: kPrimaryColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+              )
+            : Text(initialGame.name,
+                style: TextStyle(
+                    fontFamily:
+                        GoogleFonts.poppins().fontFamily ?? 'Vazirmatn')),
         actions: [
+          if (!_isSearching)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _isSearching = true;
+                });
+              },
+              icon: const Icon(FontAwesomeIcons.magnifyingGlass),
+            ),
+          if (_isSearching)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _isSearching = false;
+                  _searchQuery = '';
+                });
+              },
+              icon: const Icon(FontAwesomeIcons.xmark),
+            ),
           IconButton(
             onPressed: () {
               gamesProvider.toggleFavoriteByName(initialGame.name);
@@ -57,11 +122,11 @@ class _DetailScreenState extends State<DetailScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            for (int i = 0; i < gamesWithSameName.length; i++)
+            for (int i = 0; i < filteredGames.length; i++)
               GameTimelineTile(
-                game: gamesWithSameName[i],
+                game: filteredGames[i],
                 isFirst: i == 0,
-                isLast: i == gamesWithSameName.length - 1,
+                isLast: i == filteredGames.length - 1,
                 copiedIndex: copiedIndex,
                 onCopyText: () {
                   setState(() {

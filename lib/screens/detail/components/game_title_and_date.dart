@@ -53,83 +53,37 @@ class GameTitleAndDate extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      backgroundColor: Colors.transparent,
-                      child: Stack(
-                        alignment: Alignment.center,
+                      backgroundColor: kPrimaryColor.withOpacity(.5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(20),
-                            margin: const EdgeInsets.only(top: 45),
-                            decoration: BoxDecoration(
-                              color: kBackgroundColor,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
-                                ),
-                              ],
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 45),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 200,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.network(
-                                      game.dailyComboImage!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                const Text(
-                                  'Daily Combo Image',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: kPrimaryColor,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text(
-                                  'Here is the daily combo image for the game.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: kSubtitleColor,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Close'),
-                                ),
-                              ],
+                            child: Image.network(
+                              game.dailyComboImage!,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          Positioned(
-                            top: 0,
-                            child: CircleAvatar(
-                              backgroundColor: kPrimaryColor,
-                              radius: 45,
-                              child: CircleAvatar(
-                                backgroundColor: kSubtitleColor,
-                                radius: 40,
-                                backgroundImage: NetworkImage(game.gameIcon),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: kPrimaryColor,
+                                foregroundColor: kForegroundColor,
+                                minimumSize:
+                                    const Size.fromHeight(50), // Button height
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Close',
+                                  style: TextStyle(fontSize: 18)),
                             ),
                           ),
                         ],
@@ -139,7 +93,7 @@ class GameTitleAndDate extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: kSubtitleColor,
+                    border: Border.all(color: Colors.white, width: 2),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(

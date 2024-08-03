@@ -1,5 +1,5 @@
 import 'package:combosender/providers/games_provider.dart';
-import 'package:combosender/screens/admin/admin_screen.dart';
+import 'package:combosender/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:combosender/constants.dart';
 import 'package:combosender/screens/detail/detail_screen.dart';
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
             iconTheme: const IconThemeData(color: kSubtitleColor),
           ),
         ),
-        home: const AdminScreen(),
+        home: const HomeScreen(),
         routes: {
           DetailScreen.routeName: (context) => const DetailScreen(),
         },
